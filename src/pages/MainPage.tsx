@@ -1,17 +1,15 @@
 import { FC } from "react";
-import Header from './components/Header';
-import { useCategoties } from "../store/categories";
+import Page from "./components/Parth/Parth"
+import { usePages } from "../../src/store/pages"
 
 
 const MainPage: FC = () => {
-  const { categories, getCategories } = useCategoties();
-
-  // getCategories();
-
+  const { namePage } = usePages();
   return (
-    <div>
-      <Header/>
-    </div>
+    <>
+      <Page />
+      <h1>{ namePage }</h1>
+    </>
   );
 };
 

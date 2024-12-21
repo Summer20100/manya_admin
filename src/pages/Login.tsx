@@ -24,7 +24,7 @@ const MyForm: FC = () => {
   };
 
   return (
-    <div className="form_login">
+    <div className="login">
       <form className="form" onSubmit={handleSubmit(onSubmit)}>
         <div style={{ position: "relative" }}>
           <input className="input" {...register('email')} placeholder="Email" />
