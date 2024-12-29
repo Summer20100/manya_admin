@@ -1,22 +1,22 @@
 import { FC, useEffect } from "react";
-import { useCategoties } from "../../../store/categories";
+import { useCategories } from "../../../store/categories";
 import Category from "./Category";
 
 
 
 const Categories: FC = () => {
-    const { categories, getCategories } = useCategoties();
+    const { categories, getCategories } = useCategories();
+    
     useEffect(() => {
       getCategories()
     }, [getCategories])
   
-    console.log(categories)
     return (
-        <nav>
+        <div className="catgories">
             {
                 categories.map((category, ind) => <Category {...category} key={category.id || ind}/>)
             }
-        </nav>
+        </div>
     );
 }
 

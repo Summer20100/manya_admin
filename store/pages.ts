@@ -2,18 +2,20 @@ import { create } from 'zustand';
 
 type State = {
   namePage: string;
+  namePageRu: string;
 };
 
 type Actions = {
-  addNamePage: (namePage: string) => void;
+  addNamePage: (namePage: string, namePageRu: string) => void;
 };
 
 export const usePages = create<State & Actions>((set) => ({
   namePage: 'Categories',
+  namePageRu: 'Категории',
 
-  addNamePage: (namePage: string) => {
+  addNamePage: (namePage: string, namePageRu: string) => {
     try {
-      set({ namePage });
+      set({ namePage, namePageRu });
     } catch (error) {
       console.error(error);
     }

@@ -3,7 +3,6 @@ import Categories from "./Categories/Categories"
 
 
 
-
 const Header: FC = () => {
 
     return (
