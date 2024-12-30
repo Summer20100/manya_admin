@@ -1,37 +1,54 @@
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import { useCategories } from "../../../store/categories";
 import { usePopup } from "../../../store/popup";
 
 const PopupUpdateCategory: FC = () => {
     const { updateCategory, category } = useCategories();
     const { isOpenHandler, addNamePopup } = usePopup();
+    const [formState, setFormState] = useState({
+        id: category?.id || 0,
+        title: category?.title || "",
+        description: category?.description || "",
+        img_URL: category?.img_URL || "",
+        img_title: category?.img_title || "",
+    });
+
+    useEffect(() => {
+        setFormState({
+            id: category?.id || 0,
+            title: category?.title || "",
+            description: category?.description || "",
+            img_URL: category?.img_URL || "",
+            img_title: category?.img_title || "",
+        });
+    }, [category]);
+
+    const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setFormState((prevState) => ({
+            ...prevState,
+            [name]: value,
+        }));
+    };
 
     const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        const formData = new FormData(event.currentTarget);
-        updateCategory({
-            id: Number(formData.get("id")) || 0,
-            title: (formData.get("title") as string) || '',
-            description: (formData.get("description") as string) || '',
-            img_URL: (formData.get("img_URL") as string) || '',
-            img_title: (formData.get("img_title") as string) || '',
-        });
+        updateCategory(formState);
         event.currentTarget.reset();
-        addNamePopup('')
+        addNamePopup("");
         isOpenHandler(false);
-    };   
-
-    console.log(category)
+    };
 
     return (
         <form className="form" onSubmit={onSubmit}>
-            <input name="id" type="hidden" value={category?.id || 0} />
+            <input name="id" type="hidden" value={formState.id} />
             <input
                 className="input"
                 name="title"
                 type="text"
                 placeholder="Название категории"
-                defaultValue={category?.title || ""}
+                value={formState.title}
+                onChange={onChange}
                 required
             />
             <input
@@ -39,21 +56,24 @@ const PopupUpdateCategory: FC = () => {
                 name="description"
                 type="text"
                 placeholder="Описание"
-                defaultValue={category?.description || ""}
+                value={formState.description}
+                onChange={onChange}
             />
             <input
                 className="input"
                 name="img_URL"
                 type="text"
                 placeholder="URL-картинки"
-                defaultValue={category?.img_URL || ""}
+                value={formState.img_URL}
+                onChange={onChange}
             />
             <input
                 className="input"
                 name="img_title"
                 type="text"
                 placeholder="Описание картинки"
-                defaultValue={category?.img_title || ""}
+                value={formState.img_title}
+                onChange={onChange}
             />
             <button className="button" type="submit">
                 Отправить
