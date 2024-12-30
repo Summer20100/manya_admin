@@ -23,6 +23,7 @@ const fetchCategories = async (set: (state: Partial<State>) => void) => {
   try {
     const response = await axios.get(
       "https://marusina-sweets.onrender.com/categories/"
+      //`http://127.0.0.1:8000/categories/`
     );
     if (response.status === 200) {
       set({ categories: response.data, isDownloaded: true, isError: false });
@@ -76,6 +77,11 @@ export const useCategories = create<State & Actions>((set)=> ({
         await fetchCategories(set);
       } catch (error) {
         console.error(error);
+        set({
+          error: "An unexpected error occurred",
+          isDownloaded: true,
+          isError: true,
+        });
       }
     },
 
@@ -98,7 +104,11 @@ export const useCategories = create<State & Actions>((set)=> ({
           set({ error: error.response?.data });
         } else {
           console.error("Unexpected error:", error);
-          set({ error: "An unexpected error occurred", isDownloaded: true });
+          set({
+            error: "An unexpected error occurred",
+            isDownloaded: true,
+            isError: true,
+          });
         }
       }
     },
@@ -122,7 +132,11 @@ export const useCategories = create<State & Actions>((set)=> ({
           set({ error: error.response?.data, isDownloaded: true });
         } else {
           console.error("Unexpected error:", error);
-          set({ error: "An unexpected error occurred", isDownloaded: true });
+          set({
+            error: "An unexpected error occurred",
+            isDownloaded: true,
+            isError: true,
+          });
         }
       }
     },
@@ -144,7 +158,11 @@ export const useCategories = create<State & Actions>((set)=> ({
         await fetchCategories(set);
       } catch (error) {
         console.error(error);
-        set({ isDownloaded: true });
+        set({
+          error: "An unexpected error occurred",
+          isDownloaded: true,
+          isError: true,
+        });
       }
     }
 }))

@@ -3,7 +3,7 @@ import { ICategory } from "../../../models/ICategory";
 import { useCategories } from "../../../store/categories";
 import { usePopup } from "../../../store/popup";
 
-const Category: FC<ICategory> = (category) => {
+const Product: FC<ICategory> = (category) => {
     const { id, title, description, img_URL, img_title } = category;
     const { isOpenHandler, addNamePopup } = usePopup();
     const { getCategoryById } = useCategories();
@@ -57,4 +57,4 @@ const Category: FC<ICategory> = (category) => {
     );
 }
 
-export default Category;
+export default Product;

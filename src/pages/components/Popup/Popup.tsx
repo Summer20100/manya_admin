@@ -1,17 +1,26 @@
 import { FC, useEffect, useRef } from "react";
 import { usePopup } from "../../../store/popup";
-import PopupAddCategory from "./PopupAddCategory";
-import PopupDeleteCategory from "./PopupDeleteCategory";
-import PopupUpdateCategory from "./PopupUpdateCategory";
+import PopupAddCategory from "./categories/PopupAddCategory";
+import PopupDeleteCategory from "./categories/PopupDeleteCategory";
+import PopupUpdateCategory from "./categories/PopupUpdateCategory";
+
+import PopupAddProduct from "./products/PopupAddProduct";
+import PopupDeleteProduct from "./categories/PopupDeleteCategory";
+import PopupUpdateProduct from "./categories/PopupUpdateCategory";
 
 
 
 const Popup: FC = () => {
     const popupRef = useRef<HTMLDivElement | null>(null); 
-    const { isOpen, namePopup, isOpenHandler, addNamePopup } = usePopup();
-    const popupAddCategories = isOpen && namePopup === "Categories";
+    const { isOpen, namePopup, namePopupRu, isOpenHandler, addNamePopup } = usePopup();
+
+    const popupAddCategories = isOpen && namePopup === "AddCategory";
     const popupDeleteCategories = isOpen && namePopup === "RemoveCategory";
     const popupUpdateCategory = isOpen && namePopup === "UpdateCategory";
+
+    const popupAddProduct = isOpen && namePopup === "AddProduct";
+    const popupDeleteProduct = isOpen && namePopup === "RemoveProduct";
+    const popupUpdateProduct = isOpen && namePopup === "UpdateProduct";
 
 
     useEffect(() => {
@@ -30,14 +39,14 @@ const Popup: FC = () => {
 
     return (
         <div className='popup'>
-             <div className="popup__content" ref={popupRef}>
+            <div className="popup__content" ref={popupRef}>
                 <div className="popup__header">
-                    <span className="popup__title">{ namePopup }</span>
+                    <span className="popup__title">{ namePopupRu }</span>
                     <button 
                         className="popup__delete-button"
                         onClick={() => {
                             isOpenHandler(false); 
-                            addNamePopup('')
+                            addNamePopup('', '')
                         }}>
                         ✕
                     </button>
@@ -47,6 +56,10 @@ const Popup: FC = () => {
                         { popupAddCategories && <PopupAddCategory /> }
                         { popupDeleteCategories && <PopupDeleteCategory /> }
                         { popupUpdateCategory && <PopupUpdateCategory /> }
+
+                        { popupAddProduct && <PopupAddProduct /> }
+                        { popupDeleteProduct && <PopupDeleteProduct /> }
+                        { popupUpdateProduct && <PopupUpdateProduct /> }
                     </div>
                 </div>
             </div>

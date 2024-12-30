@@ -1,6 +1,6 @@
 import { FC } from "react";
-import { useCategories } from "../../../store/categories";
-import { usePopup } from "../../../store/popup";
+import { useCategories } from "../../../../store/categories";
+import { usePopup } from "../../../../store/popup";
 
 const PopupAddCategory: FC = () => {
     const { addCategory } = useCategories();
@@ -15,7 +15,7 @@ const PopupAddCategory: FC = () => {
             img_URL: formData.get("img_URL") as string,
             img_title: formData.get("img_title") as string,
         });
-        addNamePopup('')
+        addNamePopup('', '')
         isOpenHandler(false);
       };
 
