@@ -23,6 +23,7 @@ const fetchCategories = async (set: (state: Partial<State>) => void) => {
   try {
     const response = await axios.get(
       "https://marusina-sweets.onrender.com/categories/"
+      //`http://127.0.0.1:8000/categories/`
     );
     if (response.status === 200) {
       set({ categories: response.data, isDownloaded: true, isError: false });
