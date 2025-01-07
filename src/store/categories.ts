@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { IBaseCategory, ICategory } from '../models/ICategory';
 import axios from "axios";
+import { URL } from '../http/url';
 
 type State = {
   categories: ICategory[],
@@ -19,10 +20,13 @@ type Actions = {
   removeCategory: (id: number) => Promise<void>;
 }
 
+const { urlOnrenderCategories } = URL;
+
 const fetchCategories = async (set: (state: Partial<State>) => void) => {
   try {
     const response = await axios.get(
-      "https://marusina-sweets.onrender.com/categories/"
+      urlOnrenderCategories
+      //"https://marusina-sweets.onrender.com/categories/"
       //`http://127.0.0.1:8000/categories/`
     );
     if (response.status === 200) {
@@ -66,7 +70,8 @@ export const useCategories = create<State & Actions>((set)=> ({
       try {
         set({ isDownloaded: false, isError: false });
         const response = await axios.get(
-          `https://marusina-sweets.onrender.com/categories/${id}`,  
+          urlOnrenderCategories + id,
+          //`https://marusina-sweets.onrender.com/categories/${id}`,
           //`http://127.0.0.1:8000/categories/${id}`,
         );
         if (response.status === 200) {
@@ -89,12 +94,12 @@ export const useCategories = create<State & Actions>((set)=> ({
       try {
         set({ isDownloaded: false, isError: false });
         const responseAdd = await axios.post(
-          "https://marusina-sweets.onrender.com/categories/",
+          urlOnrenderCategories,
+          //"https://marusina-sweets.onrender.com/categories/",
           //"http://127.0.0.1:8000/categories/",
           category
         );
-        if (responseAdd.status === 200) {
-          console.log(responseAdd.data.message)
+        if (responseAdd.status === 201) {
           set({ message: responseAdd.data.message })
         };
         await fetchCategories(set);
@@ -118,7 +123,8 @@ export const useCategories = create<State & Actions>((set)=> ({
         set({ isDownloaded: false, isError: false });
         const { id } = category;
         const responseUpdate = await axios.put(
-          `https://marusina-sweets.onrender.com/categories/${id}`,
+          urlOnrenderCategories + id,
+          //`https://marusina-sweets.onrender.com/categories/${id}`,
           //`http://127.0.0.1:8000/categories/${id}`,
           category
         );
@@ -145,7 +151,8 @@ export const useCategories = create<State & Actions>((set)=> ({
       try {
         set({ isDownloaded: false, isError: false });
         const responseDel = await axios.delete(
-          `https://marusina-sweets.onrender.com/categories/${id}`,
+          urlOnrenderCategories + id,
+          //`https://marusina-sweets.onrender.com/categories/${id}`,
           //`http://127.0.0.1:8000/categories/${id}`,
         );
         if (responseDel.status === 200) {

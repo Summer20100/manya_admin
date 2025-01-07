@@ -3,7 +3,6 @@ import { useCategories } from "../../../store/categories";
 import Category from "./Category";
 
 
-
 const Categories: FC = () => {
     const { categories, getCategories } = useCategories();
     

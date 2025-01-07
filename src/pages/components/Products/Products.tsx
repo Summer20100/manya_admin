@@ -1,19 +1,21 @@
 import { FC, useEffect } from "react";
-import { useCategories } from "../../../store/categories";
+import { useProducts } from "../../../store/products";
 import Product from "./Product";
 
 
 const Products: FC = () => {
-    const { categories, getCategories } = useCategories();
+    const { products, getProducts } = useProducts();
     
     useEffect(() => {
-      getCategories()
-    }, [getCategories])
+        getProducts()
+    }, [getProducts])
   
     return (
         <div className="catgories">
             {
-                categories.map((category, ind) => <Product {...category} key={category.id || ind}/>)
+                products.map((product, ind) => 
+                    <Product {...product} key={product.id || ind}/>
+                )
             }
         </div>
     );

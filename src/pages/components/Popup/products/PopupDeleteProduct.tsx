@@ -1,20 +1,20 @@
 import { FC } from "react";
-import { useCategories } from "../../../../store/categories";
+import { useProducts } from "../../../../store/products";
 import { usePopup } from "../../../../store/popup";
 
-const PopupDeleteCategory: FC = () => {
-    const { removeCategory, category } = useCategories();
+const PopupDeleteProduct: FC = () => {
+    const { removeProduct, product } = useProducts();
     const { isOpenHandler } = usePopup();
     const handleDelete = () => {
-        if (category) {
-            removeCategory(category.id);
+        if (product) {
+            removeProduct(product.id);
             isOpenHandler(false);
         }
     };
 
     return (
         <>
-            <div>Хотите удалить категорию?</div>
+            <div>Хотите удалить продукт?</div>
             <button 
                 className="delete-button" 
                 onClick={() => handleDelete()} 
@@ -26,4 +26,4 @@ const PopupDeleteCategory: FC = () => {
     );
 };
 
-export default PopupDeleteCategory;
+export default PopupDeleteProduct;

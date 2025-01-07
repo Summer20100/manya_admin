@@ -2,15 +2,18 @@ import { FC, useState, useEffect } from "react";
 import Page from "./components/Parth/Parth";
 import { usePages } from "../../src/store/pages";
 import { usePopup } from "../../src/store/popup";
+import { useProducts } from "../store/products";
 import Categories from "./components/Categories/Categories";
+import Products from "./components/Products/Products";
 import Popup from "./components/Popup/Popup";
 
 const MainPage: FC = () => {
   const { namePage, namePageRu } = usePages();
   const { isOpen, isOpenHandler, addNamePopup } = usePopup();
+  const { message, error } = useProducts();
 
-  const [namePopup, setNamePopup] = useState<string>('')
-  const [namePopupRu, setNamePopupRu] = useState<string>('')
+  const [namePopup, setNamePopup] = useState<string>('');
+  const [namePopupRu, setNamePopupRu] = useState<string>('');
 
   useEffect(() => {
     if (namePage === "Products") {
@@ -26,22 +29,15 @@ const MainPage: FC = () => {
       setNamePopup("AddClient");
       setNamePopupRu("Добавить клиента")
     }
-  }, [namePage])
+  }, [namePage]);
 
-/*   if (namePage === "Products") {
-    setNamePopup("AddProducts");
-    setNamePopupRu("Добавить продукт")
-  } else if(namePage === "Categories") {
-    setNamePopup("AddCategories");
-    setNamePopupRu("Добавить категорию")
-  } */
-
-    console.log(namePopup, namePopupRu)
-
+  console.log(message)
+  console.log(error)
 
   return (
     <>
       <Page />
+      <p>{message}</p>
       <h1>{namePageRu}</h1>
       <button
         onClick={() => {
@@ -52,7 +48,8 @@ const MainPage: FC = () => {
         Добавить в раздел "{namePageRu}"
       </button>
       { isOpen && <Popup /> }
-      {namePage === "Categories" && <Categories />}
+      { namePage === "Categories" && <Categories /> }
+      { namePage === "Products" && <Products /> }
     </>
   );
 };

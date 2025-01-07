@@ -5,8 +5,8 @@ import PopupDeleteCategory from "./categories/PopupDeleteCategory";
 import PopupUpdateCategory from "./categories/PopupUpdateCategory";
 
 import PopupAddProduct from "./products/PopupAddProduct";
-import PopupDeleteProduct from "./categories/PopupDeleteCategory";
-import PopupUpdateProduct from "./categories/PopupUpdateCategory";
+import PopupDeleteProduct from "./products/PopupDeleteProduct";
+import PopupUpdateProduct from "./products/PopupUpdateProduct";
 
 
 

@@ -1,14 +1,20 @@
 import { FC } from "react";
-import { ICategory } from "../../../models/ICategory";
-import { useCategories } from "../../../store/categories";
+import { IProduct } from "../../../models/IProduct";
+import { useProducts } from "../../../store/products";
 import { usePopup } from "../../../store/popup";
 
-const Product: FC<ICategory> = (category) => {
-    const { id, title, description, img_URL, img_title } = category;
+const Product: FC<IProduct> = (product) => {
+    const { 
+        id,
+        title,
+        description,
+        img_URL,
+        img_title
+    } = product;
+    
     const { isOpenHandler, addNamePopup } = usePopup();
-    const { getCategoryById } = useCategories();
+    const { getProductById } = useProducts();
     const img_URL_no_photo = "/img/no_photo.jpg";
-
 
     return (
         <div className="category">
@@ -17,8 +23,10 @@ const Product: FC<ICategory> = (category) => {
                 className="delete-button" 
                 onClick={() => {
                     isOpenHandler(true);
-                    addNamePopup("RemoveCategory", "Удалить категорию");
-                    getCategoryById(id)
+                    console.log("Before addNamePopup");
+                    addNamePopup("RemoveProduct", "Удалить продукт");
+                    console.log("After addNamePopup");
+                    getProductById(id);
                     }}>
                 ✕
             </button>
@@ -27,8 +35,8 @@ const Product: FC<ICategory> = (category) => {
                     className="img" 
                     onClick={() => {
                         isOpenHandler(true);
-                        addNamePopup("UpdateCategory", "Обновить категорию");
-                        getCategoryById(id)
+                        addNamePopup("UpdateProduct", "Обновить продукт");
+                        getProductById(id)
                 }}>
                     <img 
                         src={img_URL === '' ? img_URL_no_photo : img_URL} 
@@ -41,8 +49,8 @@ const Product: FC<ICategory> = (category) => {
                     className="img" 
                     onClick={() => {
                         isOpenHandler(true);
-                        addNamePopup("UpdateCategory", "Обновить категорию");
-                        getCategoryById(id)
+                        addNamePopup("UpdateProduct", "Обновить продукт");
+                        getProductById(id)
                 }}>
                     <img 
                         src={img_URL_no_photo} 
