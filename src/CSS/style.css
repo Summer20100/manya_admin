@@ -56,14 +56,42 @@ nav {
 }
 
 .nav-category {
-  border: 2px solid red;
+  border: 2px solid white;
+  color: white;
   padding: .5rem;
+  background-color: transparent;
+  transition: background-color 0.3s ease;
 }
+
+.nav-category:hover {
+  background-color: #8dcc94;
+  border-color: white;
+}
+
+.nav-category.active {
+  background-color: blue;
+  color: white;
+}
+
 
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
 }
+
+.add-btn {
+  background-color: #0cd126;
+  color: white;
+  border-color: transparent;
+  margin-bottom: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.add-btn:hover {
+  background-color: #8dcc94;
+  border-color: transparent;
+}
+
 
 button {
   border-radius: 8px;
@@ -82,7 +110,7 @@ button:hover {
 
 button:focus,
 button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  outline: 1rem auto -webkit-focus-ring-color;
 }
 
 @media (prefers-color-scheme: light) {
@@ -102,9 +130,9 @@ button:focus-visible {
 .catgories {
   display: flex;
   flex-direction: row;
-  flex-wrap: wrap; /* Разрешаем перенос строк, если не хватает места */
-  gap: 20px; /* Расстояние между элементами */
-  padding: 10px; /* Внутренний отступ */
+  flex-wrap: wrap;
+  gap: 20px;
+  padding-bottom: 10px;
   box-sizing: border-box;
 }
 
@@ -182,6 +210,109 @@ button:focus-visible {
 
 .category .delete-button:hover {
   background-color: rgba(200, 0, 0, 0.9);
+}
+
+/* Products */
+.table {
+  width: 100%;
+  overflow-x: auto;
+  margin: 1rem 0;
+
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.table .img {
+  flex-shrink: 0;
+  aspect-ratio: 16 / 9;
+  width: 120px;
+  overflow: hidden;
+  cursor: inherit;
+  border: rgba(0, 0, 0, 0.2) 1px solid;
+  border-radius: 8px;
+}
+
+.table .img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.table .img:hover img {
+  transform: scale(1.1);
+}
+
+.table-products {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 1rem;
+  text-align: left;
+}
+
+.table-products thead tr {
+  background-color: rgba(17, 145, 250, 0.438);
+  color:inherit;
+  text-align: left;
+  font-weight: bold;
+}
+
+.table-products th,
+.table-products td {
+  border: 1px solid #dddddd;
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+  white-space: nowrap;
+}
+
+.table-products tbody tr {
+  transition: transform 0.5s ease, background-color 0.5s ease;
+}
+
+.table-products tbody tr:nth-of-type(even) {
+  background-color: #f3f3f3;
+}
+
+.table-products tbody tr:nth-of-type(odd) {
+  background-color: #ffffff;
+
+}
+
+.table-products tbody tr:hover {
+  background-color: #d4f0d4;
+  transform-origin: center;
+  clip-path: inset(0 0 0 0);
+}
+
+.edit-button,
+.delete-button {
+  padding: 5px 10px;
+  font-size: 14px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.edit-button {
+  background-color: #4caf50;
+  color: white;
+}
+
+.edit-button:hover {
+  background-color: #45a049;
+}
+
+.delete-button {
+  background-color: #f44336;
+  color: white;
+}
+
+.delete-button:hover {
+  background-color: #d32f2f;
 }
 
 /* Popup */
@@ -267,7 +398,7 @@ button:focus-visible {
   position: fixed;
   right: 0;
   top: 0;
-  z-index: 99999;
+  z-index: 999;
   background-color: rgba(0, 0, 0, 0.8);
 }
 

@@ -14,6 +14,7 @@ type State = {
 
 type Actions = {
   getProducts: () => Promise<void>;
+  clearNotifications: () => Promise<void>;
   getProductById: (id: number) => Promise<void>;
   addProduct: (category: IBaseProduct ) => Promise<void>;
   updateProduct: (category: IProduct ) => Promise<void>;
@@ -131,6 +132,7 @@ export const useProducts = create<State & Actions>((set)=> ({
         await fetchProducts(set);
       } catch (error) {
         if (axios.isAxiosError(error)) {
+          console.error(error.response?.data);
           set({ error: error.response?.data, isDownloaded: true });
         } else {
           console.error("Произошла непредвиденная ошибка:", error);
@@ -165,5 +167,7 @@ export const useProducts = create<State & Actions>((set)=> ({
           isError: true,
         });
       }
-    }
+    },
+
+    clearNotifications: async () => set({ message: '', error: '' }),
 }))

@@ -8,6 +8,10 @@ import PopupAddProduct from "./products/PopupAddProduct";
 import PopupDeleteProduct from "./products/PopupDeleteProduct";
 import PopupUpdateProduct from "./products/PopupUpdateProduct";
 
+import PopupAddClient from "./clients/PopupAddClient";
+import PopupDeleteClient from "./clients/PopupDeleteClient";
+import PopupUpdateClient from "./clients/PopupUpdateClient";
+
 
 
 const Popup: FC = () => {
@@ -21,6 +25,10 @@ const Popup: FC = () => {
     const popupAddProduct = isOpen && namePopup === "AddProduct";
     const popupDeleteProduct = isOpen && namePopup === "RemoveProduct";
     const popupUpdateProduct = isOpen && namePopup === "UpdateProduct";
+
+    const popupAddClient = isOpen && namePopup === "AddClient";
+    const popupDeleteClient = isOpen && namePopup === "RemoveClient";
+    const popupUpdateClient = isOpen && namePopup === "UpdateClient";
 
 
     useEffect(() => {
@@ -60,6 +68,10 @@ const Popup: FC = () => {
                         { popupAddProduct && <PopupAddProduct /> }
                         { popupDeleteProduct && <PopupDeleteProduct /> }
                         { popupUpdateProduct && <PopupUpdateProduct /> }
+
+                        { popupAddClient && <PopupAddClient /> }
+                        { popupDeleteClient && <PopupDeleteClient /> }
+                        { popupUpdateClient && <PopupUpdateClient /> }
                     </div>
                 </div>
             </div>

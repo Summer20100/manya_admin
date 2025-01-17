@@ -1,0 +1,205 @@
+import { create } from 'zustand';
+import { IBaseClient, IClient } from '../models/IClient';
+import axios from "axios";
+import { URL } from '../http/url';
+
+type State = {
+  clients: IClient[],
+  client: IClient | null
+  message: string,
+  error: string
+  isDownloaded: boolean,
+  isError: boolean
+}
+
+type Actions = {
+  getClients: () => Promise<void>;
+  clearNotifications: () => Promise<void>;
+  getClientById: (id: number) => Promise<void>;
+  addClient: (client: IBaseClient ) => Promise<void>;
+  updateClient: (client: IClient ) => Promise<void>;
+  removeClient: (id: number) => Promise<void>;
+}
+
+const { 
+  urlOnrenderClients, 
+  // urlLocalserverClients 
+} = URL;
+
+const fetchClients = async (set: (state: Partial<State>) => void) => {
+  try {
+    const response = await axios.get(
+      urlOnrenderClients
+      //"https://marusina-sweets.onrender.com/categories/"
+      //`http://127.0.0.1:8000/categories/`
+    );
+    if (response.status === 200) {
+      set({ clients: response.data, isDownloaded: true, isError: false });
+    } else {
+      set({ clients: [], isDownloaded: true, isError: true });
+    }
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      set({
+        error: error.response?.data || "Произошла непредвиденная ошибка",
+        isDownloaded: true,
+        isError: true,
+      });
+    } else {
+      set({
+        error: "Произошла непредвиденная ошибка",
+        isDownloaded: true,
+        isError: true,
+      });
+    }
+  }
+};
+
+export const useClients = create<State & Actions>((set)=> ({
+  clients: [],
+  client: null,
+  message: '',
+  error: '',
+  isDownloaded: false,
+  isError: false,
+
+  getClients: async () => {
+    set({ isDownloaded: false, isError: false });
+    await fetchClients(set);
+  },
+
+  getClientById: async (id: number) => {
+    try {
+      set({ isDownloaded: false, isError: false });
+      const response = await axios.get(
+        urlOnrenderClients + id,
+        //`https://marusina-sweets.onrender.com/categories/${id}`,
+        //`http://127.0.0.1:8000/categories/${id}`,
+      );
+      if (response.status === 200) {
+        set({ client: response.data, isDownloaded: true });
+      } else {
+        set({ client: null });
+      }
+      await fetchClients(set);
+    } catch (error) {
+      console.error(error);
+      set({
+        error: "Произошла непредвиденная ошибка",
+        isDownloaded: true,
+        isError: true,
+      });
+    }
+  },
+
+  addClient: async (client: IBaseClient) => {
+    try {
+      set({ isDownloaded: false, isError: false });
+      const responseAdd = await axios.post(
+        urlOnrenderClients,
+        //urlLocalserverClients,
+        //"https://marusina-sweets.onrender.com/categories/",
+        //"http://127.0.0.1:8000/categories/",
+        client
+      );
+      if (responseAdd.status === 201) {
+        set({ message: responseAdd.data.message })
+      };
+      await fetchClients(set);
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.response?.status === 400) {
+          console.error(error.response.data.detail);
+          set({
+            error: error.response.data.detail,
+            isDownloaded: true,
+            isError: false,
+          });
+        } else {
+          console.error("Непредвиденная ошибка: ", error.response?.data);
+          set({
+            error: error.response?.data || "Непредвиденная ошибка",
+            isDownloaded: true,
+            isError: true,
+          });
+        }
+      } else {
+        console.error("Непредвиденная ошибка:", error);
+        set({
+          error: "Непредвиденная ошибка",
+          isDownloaded: true,
+          isError: true,
+        });
+      }
+    }
+  },
+
+  updateClient: async (client: IClient) => {
+    try {
+      set({ isDownloaded: false, isError: false });
+      const { id } = client;
+      const responseUpdate = await axios.put(
+        //urlLocalserverClients +id,
+        urlOnrenderClients + id,
+        //`https://marusina-sweets.onrender.com/categories/${id}`,
+        //`http://127.0.0.1:8000/categories/${id}`,
+        client
+      );
+      if (responseUpdate.status === 200) {
+        set({ message: responseUpdate.data.message })
+      };
+      await fetchClients(set);
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.response?.status === 400) {
+          console.error(error.response.data.detail);
+          set({
+            error: error.response.data.detail,
+            isDownloaded: true,
+            isError: false,
+          });
+        } else {
+          console.error("Непредвиденная ошибка: ", error.response?.data);
+          set({
+            error: error.response?.data || "Непредвиденная ошибка",
+            isDownloaded: true,
+            isError: true,
+          });
+        }
+      } else {
+        console.error("Непредвиденная ошибка:", error);
+        set({
+          error: "Непредвиденная ошибка",
+          isDownloaded: true,
+          isError: true,
+        });
+      }
+    }
+  },
+
+  removeClient: async (id: number) => {
+    try {
+      set({ isDownloaded: false, isError: false });
+      const responseDel = await axios.delete(
+        urlOnrenderClients + id,
+        //`https://marusina-sweets.onrender.com/categories/${id}`,
+        //`http://127.0.0.1:8000/categories/${id}`,
+      );
+      if (responseDel.status === 200) {
+        set({ message: responseDel.data.message })
+      } else {
+        set({ error: responseDel.data.message })
+      };
+      await fetchClients(set);
+    } catch (error) {
+      console.error(error);
+      set({
+        error: "Произошла непредвиденная ошибка",
+        isDownloaded: true,
+        isError: true,
+      });
+    }
+  },
+
+  clearNotifications: async () => set({ message: '', error: '' }),
+}))

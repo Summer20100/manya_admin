@@ -13,6 +13,7 @@
     "@hookform/resolvers": "^3.9.1",
     "axios": "^1.7.9",
     "dotenv": "^16.4.7",
+    "html2canvas": "^1.4.1",
     "postcss": "^8.4.49",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -24,8 +25,10 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.15.0",
+    "@types/html2canvas": "^0.5.35",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
+    "@types/serviceworker": "^0.0.109",
     "@vitejs/plugin-react": "^4.3.4",
     "autoprefixer": "^10.4.20",
     "eslint": "^9.15.0",
