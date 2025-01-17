@@ -11,9 +11,9 @@ export default defineConfig({
         enabled: true, // Включает поддержку PWA в режиме разработки
       },
       manifest: {
-        name: 'React App',
-        short_name: 'ReactApp',
-        description: 'React App with Service Worker',
+        name: 'МарусиныСладости',
+        short_name: 'МарусиныСладости',
+        description: 'МарусиныСладости with Service Worker',
         theme_color: '#ffffff',
         background_color: "#ffffff",
         display: "standalone",
