@@ -3,7 +3,7 @@ import { useProducts } from "../../../../store/products";
 import { useCategories } from "../../../../store/categories";
 import { usePopup } from "../../../../store/popup";
 
-const PopupAddProduct: FC = () => {
+const PopupAddOrder: FC = () => {
     const { addProduct } = useProducts();
 
     const { isOpenHandler, addNamePopup } = usePopup();
@@ -239,4 +239,4 @@ const PopupAddProduct: FC = () => {
     );
 };
 
-export default PopupAddProduct;
+export default PopupAddOrder;

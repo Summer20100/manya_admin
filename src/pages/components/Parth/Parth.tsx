@@ -12,36 +12,36 @@ const Page: FC = () => {
     
     return (
         <nav>
-            <button
+            <div
                 className={`nav-category ${activeButton === 'Categories' ? 'active' : ''}`}
                 onClick={() => handleButtonClick('Categories', 'Категории')}
             >
                 Категории
-            </button>
-            <button
+            </div>
+            <div
                 className={`nav-category ${activeButton === 'Products' ? 'active' : ''}`}
                 onClick={() => handleButtonClick('Products', 'Продукты')}
             >
-                Продукты
-            </button>
-            <button
+                <span>Продукты</span>
+            </div>
+            <div
                 className={`nav-category ${activeButton === 'Clients' ? 'active' : ''}`}
                 onClick={() => handleButtonClick('Clients', 'Клиенты')}
             >
                 Клиенты
-            </button>
-            <button
+            </div>
+            <div
                 className={`nav-category ${activeButton === 'Orders' ? 'active' : ''}`}
                 onClick={() => handleButtonClick('Orders', 'Заказы')}
             >
                 Заказы
-            </button>
-            <button
+            </div>
+            {/* <div
                 className={`nav-category ${activeButton === 'Photos' ? 'active' : ''}`}
                 onClick={() => handleButtonClick('Photos', 'Фотографии')}
             >
                 Фотографии
-            </button>
+            </div> */}
         </nav>
     );
 }

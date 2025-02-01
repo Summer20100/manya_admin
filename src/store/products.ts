@@ -104,7 +104,21 @@ export const useProducts = create<State & Actions>((set)=> ({
         await fetchProducts(set);
       } catch (error) {
         if (axios.isAxiosError(error)) {
-          set({ error: error.response?.data });
+          if (error.response?.status === 400) {
+            console.error(error.response.data.detail);
+            set({
+              error: error.response.data.detail,
+              isDownloaded: true,
+              isError: false,
+            });
+          } else {
+            console.error("Непредвиденная ошибка: ", error.response?.data);
+            set({
+              error: error.response?.data || "Непредвиденная ошибка",
+              isDownloaded: true,
+              isError: true,
+            });
+          }
         } else {
           console.error("Непредвиденная ошибка:", error);
           set({
