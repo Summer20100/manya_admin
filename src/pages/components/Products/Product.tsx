@@ -28,7 +28,7 @@ const Product: FC<ProductProps> = ({
     const img_URL_no_photo = "/img/no_photo.jpg";
 
     const titleCategories = (id: number | null | undefined) => {
-        if (!id) return "Категория не указана";
+        if (!id) return "Нет";
         const category = categories.find(itm => itm.id === id);
         return category ? category.title : "Неизвестная категория";
     };
@@ -61,7 +61,7 @@ const Product: FC<ProductProps> = ({
             <td>{price_for_itm}</td>
             <td>{weight_for_itm}</td>
             <td>{titleCategories(category_id)}</td>
-            <td>{is_active ? "В продаже" : "Не в продаже"}</td>
+            <td>{is_active ? "Да" : "Нет"}</td>
             <td>
                 <button
                     className="edit-button"

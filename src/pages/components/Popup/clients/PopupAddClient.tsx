@@ -1,49 +1,93 @@
-import { FC  } from "react";
+import { FC } from "react";
 import { useClients } from "../../../../store/clients";
 import { usePopup } from "../../../../store/popup";
+import InputMask from "react-input-mask";
+import { useForm } from "react-hook-form";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+
+const schema = yup.object().shape({
+    name: yup
+    .string()
+    .required("Введите имя")
+    .min(3, "Минимум 3 символа"),
+    phone: yup
+        .string()
+        .matches(/\+7\(\d{3}\)\d{3}-\d{2}-\d{2}/, "Некорректный формат номера")
+        .required("Телефон обязателен для заполнения"),
+});
 
 
 const PopupAddClient: FC = () => {
-    const { addClient } = useClients();
+    const { addClient, clients } = useClients();
     const { isOpenHandler, addNamePopup } = usePopup();
+    const {
+        register,
+        handleSubmit,
+        setError,
+        formState: { errors },
+    } = useForm({ 
+        mode: 'all',
+        resolver: yupResolver(schema),
+        context: { clients }
+    });
 
-    const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        const formData = new FormData(event.currentTarget);
+    const onSubmit = (data: { name: string; phone: string }) => {
+        let phone = data.phone.replace(/\D/g, ""); // Убираем все нецифровые символы
+        phone = `+7${phone.slice(1)}`; // Форматируем под +7XXXXXXXXXX
 
-        const name = formData.get("name")?.toString() || '';
-        const phone = formData.get("phone")?.toString() || '';
+        const isClientExists = clients.find((client) => client.phone === phone);
+        if (isClientExists) {
+            setError("phone", { type: "manual", message: "Клиент с таким номером уже существует" });
+            return;
+        }
 
-        addClient({
-            name,
-            phone
-        });
-
-        addNamePopup('', '')
+        addClient({ name: data.name, phone });
+        addNamePopup('', '');
         isOpenHandler(false);
     };
 
+    const onCange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const { value } = event.target
+        let phone = value.replace(/\D/g, "");
+        phone = `+7${phone.slice(1)}`;
+        const isClientExists = clients.find(c => phone === c.phone);
+
+        if (isClientExists) {
+            setError("phone", { type: "manual", message: "Клиент с таким номером уже существует" });
+            return;
+        } else {
+            setError("phone", { type: "manual", message: "" });
+        }
+    }
 
     return (
-        <form className="form" onSubmit={onSubmit}>
-            <input
-                className="input"
-                name="name"
-                type="text"
-                placeholder="Имя клиента"
-                required
-            />
-            <input
-                className="input"
-                name="phone"
-                type="tel"
-                /* value={value}
-                onChange={handleChange} */
-                maxLength={16}
-                placeholder="+7(XXX)XXX-XX-XX"
-                required
-                style={{ fontFamily: "monospace" }}
-            />
+        <form className="form" onSubmit={handleSubmit(onSubmit)}>
+            <div style={{ position: 'relative' }}>
+                <input
+                    className="input"
+                    {...register("name")}
+                    type="text"
+                    placeholder="Имя клиента"
+                    required
+                />
+                {errors.name && <div className="errors">{errors.name.message}</div>}
+            </div>
+
+            <div style={{ position: 'relative' }}>
+                <InputMask
+                    className="input"
+                    {...register("phone")}
+                    type="tel"
+                    mask="+7(999)999-99-99"
+                    onChange={onCange}
+                    placeholder="+7(XXX)XXX-XX-XX"
+                    required
+                    style={{ fontFamily: "monospace" }}
+                />
+                {errors.phone && <div className="errors">{errors.phone.message}</div>}
+            </div>
+
             <button className="button" type="submit">
                 Отправить
             </button>

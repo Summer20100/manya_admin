@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { IBaseClient, IClient } from '../models/IClient';
 import axios from "axios";
 import { URL } from '../http/url';
+import api from '../http/api';
 
 type State = {
   clients: IClient[],
@@ -22,16 +23,18 @@ type Actions = {
 }
 
 const { 
-  urlOnrenderClients, 
+  //urlOnrenderClients,
+  urlJWTClients,
   // urlLocalserverClients 
 } = URL;
 
 const fetchClients = async (set: (state: Partial<State>) => void) => {
   try {
-    const response = await axios.get(
-      urlOnrenderClients
+    const response = await api.get(
+      //urlOnrenderClients
       //"https://marusina-sweets.onrender.com/categories/"
       //`http://127.0.0.1:8000/categories/`
+      urlJWTClients
     );
     if (response.status === 200) {
       set({ clients: response.data, isDownloaded: true, isError: false });
@@ -41,9 +44,9 @@ const fetchClients = async (set: (state: Partial<State>) => void) => {
   } catch (error) {
     if (axios.isAxiosError(error)) {
       set({
-        error: error.response?.data || "Произошла непредвиденная ошибка",
+        error: error.response?.data.detail || "Произошла непредвиденная ошибка",
         isDownloaded: true,
-        isError: true,
+        isError: false,
       });
     } else {
       set({
@@ -71,8 +74,9 @@ export const useClients = create<State & Actions>((set)=> ({
   getClientById: async (id: number) => {
     try {
       set({ isDownloaded: false, isError: false });
-      const response = await axios.get(
-        urlOnrenderClients + id,
+      const response = await api.get(
+        //urlOnrenderClients + id,
+        urlJWTClients +id,
         //`https://marusina-sweets.onrender.com/categories/${id}`,
         //`http://127.0.0.1:8000/categories/${id}`,
       );
@@ -95,8 +99,9 @@ export const useClients = create<State & Actions>((set)=> ({
   addClient: async (client: IBaseClient) => {
     try {
       set({ isDownloaded: false, isError: false });
-      const responseAdd = await axios.post(
-        urlOnrenderClients,
+      const responseAdd = await api.post(
+        //urlOnrenderClients,
+        urlJWTClients,
         //urlLocalserverClients,
         //"https://marusina-sweets.onrender.com/categories/",
         //"http://127.0.0.1:8000/categories/",
@@ -138,9 +143,10 @@ export const useClients = create<State & Actions>((set)=> ({
     try {
       set({ isDownloaded: false, isError: false });
       const { id } = client;
-      const responseUpdate = await axios.put(
+      const responseUpdate = await api.put(
         //urlLocalserverClients +id,
-        urlOnrenderClients + id,
+        //urlOnrenderClients + id,
+        urlJWTClients + id,
         //`https://marusina-sweets.onrender.com/categories/${id}`,
         //`http://127.0.0.1:8000/categories/${id}`,
         client
@@ -180,8 +186,9 @@ export const useClients = create<State & Actions>((set)=> ({
   removeClient: async (id: number) => {
     try {
       set({ isDownloaded: false, isError: false });
-      const responseDel = await axios.delete(
-        urlOnrenderClients + id,
+      const responseDel = await api.delete(
+        //urlOnrenderClients + id,
+        urlJWTClients + id,
         //`https://marusina-sweets.onrender.com/categories/${id}`,
         //`http://127.0.0.1:8000/categories/${id}`,
       );

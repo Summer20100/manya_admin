@@ -36,7 +36,7 @@ const Page: FC = () => {
             >
                 Заказы
             </div>
-            {/* <div
+{/*             <div
                 className={`nav-category ${activeButton === 'Photos' ? 'active' : ''}`}
                 onClick={() => handleButtonClick('Photos', 'Фотографии')}
             >

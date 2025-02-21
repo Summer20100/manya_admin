@@ -38,33 +38,41 @@ const Products: FC = () => {
     });
 
     return (
-        <div className="table">
-            {groupedByCategory.map((table) => (
-                <div key={table.title_categories}>
-                    <h3>{table.title_categories} : {table.items.length} поз.</h3>
-                    <table className="table-products">
-                        <thead>
-                            <tr>
-                                <th>№</th>
-                                <th>Картинка</th>
-                                <th>Название</th>
-                                <th>Описание</th>
-                                <th>Цена (₽)</th>
-                                <th>Вес (г)</th>
-                                <th>Категория</th>
-                                <th>Статус</th>
-                                <th>Действия</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {table.items.map((product, index) => (
-                                <Product {...product} key={product.id} index={index} />
-                            ))}
-                        </tbody>
-                    </table>
+        <>
+            { products.length > 0
+                ?
+                <div className="table">
+                    {groupedByCategory.map((table) => (
+                        <div key={table.title_categories}>
+                            <h3>{table.title_categories} : {table.items.length} поз.</h3>
+                            <table className="table-products">
+                                <thead>
+                                    <tr>
+                                        <th className="number">№</th>
+                                        <th style={{ width: "3rem" }}>Картинка</th>
+                                        <th>Название</th>
+                                        <th style={{ width: "10rem" }}>Описание</th>
+                                        <th style={{ width: "3rem" }}>Цена (₽)</th>
+                                        <th style={{ width: "3rem" }}>Вес (г)</th>
+                                        <th style={{ width: "5rem" }}>Категория</th>
+                                        <th style={{ width: "5rem" }}>В продаже</th>
+                                        <th className="actions">Действия</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {table.items.map((product, index) => (
+                                        <Product {...product} key={product.id} index={index} />
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    ))}
                 </div>
-            ))}
-        </div>
+                :
+                <h3>Нет пока ничего</h3>
+            }
+        </>
+        
     );
 };
 

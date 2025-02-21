@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useState, useRef } from "react";
 import { useProducts } from "../../../../store/products";
 import { useCategories } from "../../../../store/categories";
 import { usePopup } from "../../../../store/popup";
@@ -7,6 +7,9 @@ const PopupUpdateProduct: FC = () => {
     const { updateProduct, product } = useProducts();
     const { isOpenHandler, addNamePopup } = usePopup();
     const { categories } = useCategories();
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
     const [formState, setFormState] = useState({
         id: product?.id || 0,
         title: product?.title || "",
@@ -31,7 +34,14 @@ const PopupUpdateProduct: FC = () => {
             is_active: product?.is_active || false,
             category_id: product?.category_id || null,
         });
+        setPreviewUrl(product?.img_URL || null);
     }, [product]);
+
+    useEffect(() => {
+        if (formState.img_URL) {
+            setPreviewUrl(formState.img_URL);
+        }
+    }, [formState.img_URL]);
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value, type } = e.target;
@@ -44,14 +54,42 @@ const PopupUpdateProduct: FC = () => {
                     ? (value === "" ? null : Number(value))
                     : value
         }));
+    
+        if (name === "img_URL") {
+            setPreviewUrl(value);
+        }
     };
-    
-    
-    
+
+    const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                setPreviewUrl(e.target?.result as string);
+                setFormState((prevState) => ({
+                    ...prevState,
+                    img_URL: e.target?.result as string,
+                }));
+            };
+            reader.readAsDataURL(file);
+        } else {
+            setPreviewUrl(formState.img_URL);
+        }
+    };
+
+    const handleCancel = () => {
+        console.log("QWERTY")
+        setPreviewUrl(null);
+        if (fileInputRef.current) fileInputRef.current.value = "";
+
+        setFormState((prevState) => ({
+            ...prevState,
+            img_URL: ''
+        }));
+    };
 
     const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        //console.log(formState)
         updateProduct(formState);
         addNamePopup("", "");
         isOpenHandler(false);
@@ -77,6 +115,7 @@ const PopupUpdateProduct: FC = () => {
                 value={formState.description}
                 onChange={onChange}
             />
+
             <input
                 className="input"
                 name="img_URL"
@@ -85,6 +124,36 @@ const PopupUpdateProduct: FC = () => {
                 value={formState.img_URL}
                 onChange={onChange}
             />
+            <span style={{ margin: '-1.5rem' }}>или</span>
+            <label htmlFor="fileInput" className="input add-btn" style={{ cursor: 'pointer' }}>
+                Выберите файл
+                <input
+                    className="input"
+                    name="img_file"
+                    type="file"
+                    id="fileInput"
+                    onChange={handleFileSelect}
+                    ref={fileInputRef}
+                    style={{ display: 'none' }}
+                />
+            </label>
+
+            {previewUrl && (
+                <div style={{ marginTop: "10px", position: 'relative' }}>
+                    <img
+                        src={previewUrl}
+                        alt="Preview"
+                    />
+                    <button
+                        type="button"
+                        onClick={handleCancel}
+                        className="delete-button"
+                    >
+                        ✕
+                    </button>
+                </div>
+            )}
+
             <input
                 className="input"
                 name="img_title"
@@ -123,14 +192,6 @@ const PopupUpdateProduct: FC = () => {
                 />
                 <span style={{ marginLeft: "10px" }}>В продажу</span>
             </label>
-{/*             <input
-                className="input"
-                name="category_id"
-                type="number"
-                placeholder="Категория"
-                value={formState.category_id || ""}
-                onChange={onChange}
-            /> */}
 
             <select
                 className="input"
@@ -145,8 +206,6 @@ const PopupUpdateProduct: FC = () => {
                     </option>
                 ))}
             </select>
-
-
 
             <button className="button" type="submit">
                 Обновить

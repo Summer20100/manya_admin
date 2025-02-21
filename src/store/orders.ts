@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { IBaseOrder, IOrder } from '../models/IOrder';
 import axios from "axios";
 import { URL } from '../http/url';
+import api from '../http/api';
 
 type State = {
   orders: IOrder[],
@@ -21,12 +22,16 @@ type Actions = {
   removeOrder: (id: number) => Promise<void>;
 }
 
-const { urlOnrenderOrders } = URL;
+const { 
+  //urlOnrenderOrders,
+  urlJWTOrders
+ } = URL;
 
 const fetchOrders = async (set: (state: Partial<State>) => void) => {
   try {
-    const response = await axios.get(
-      urlOnrenderOrders
+    const response = await api.get(
+      //urlOnrenderOrders
+      urlJWTOrders
       //"https://marusina-sweets.onrender.com/categories/"
       //`http://127.0.0.1:8000/categories/`
     );
@@ -38,9 +43,9 @@ const fetchOrders = async (set: (state: Partial<State>) => void) => {
   } catch (error) {
     if (axios.isAxiosError(error)) {
       set({
-        error: error.response?.data || "Произошла непредвиденная ошибка",
+        error: error.response?.data.detail || "Произошла непредвиденная ошибка",
         isDownloaded: true,
-        isError: true,
+        isError: false,
       });
     } else {
       set({
@@ -68,8 +73,9 @@ export const useOrders = create<State & Actions>((set)=> ({
   getOrderById: async (id: number) => {
     try {
       set({ isDownloaded: false, isError: false });
-      const response = await axios.get(
-        urlOnrenderOrders + id,
+      const response = await api.get(
+        //urlOnrenderOrders + id,
+        urlJWTOrders + id,
           //`https://marusina-sweets.onrender.com/categories/${id}`,
           //`http://127.0.0.1:8000/categories/${id}`,
       );
@@ -84,7 +90,7 @@ export const useOrders = create<State & Actions>((set)=> ({
       set({
         error: "Произошла непредвиденная ошибка",
         isDownloaded: true,
-        isError: true,
+        isError: false,
       });
     }
   },
@@ -92,8 +98,9 @@ export const useOrders = create<State & Actions>((set)=> ({
   addOrder: async (order: IBaseOrder) => {
     try {
       set({ isDownloaded: false, isError: false });
-      const responseAdd = await axios.post(
-        urlOnrenderOrders,
+      const responseAdd = await api.post(
+        //urlOnrenderOrders,
+        urlJWTOrders,
         //"https://marusina-sweets.onrender.com/categories/",
         //"http://127.0.0.1:8000/categories/",
         order
@@ -102,9 +109,24 @@ export const useOrders = create<State & Actions>((set)=> ({
         set({ message: responseAdd.data.message })
       };
       await fetchOrders(set);
+      //console.log(order)
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        set({ error: error.response?.data });
+        if (error.response?.status === 400) {
+          console.error(error.response.data.detail);
+          set({
+            error: error.response.data.detail,
+            isDownloaded: true,
+            isError: false,
+          });
+        } else {
+          console.error("Непредвиденная ошибка: ", error.response?.data);
+          set({
+            error: error.response?.data.detail || "Непредвиденная ошибка",
+            isDownloaded: true,
+            isError: false,
+          });
+        }
       } else {
         console.error("Непредвиденная ошибка:", error);
         set({
@@ -120,8 +142,9 @@ export const useOrders = create<State & Actions>((set)=> ({
     try {
       set({ isDownloaded: false, isError: false });
       const { id } = order;
-      const responseUpdate = await axios.put(
-        urlOnrenderOrders + id,
+      const responseUpdate = await api.put(
+        //urlOnrenderOrders + id,
+        urlJWTOrders + id,
         //`https://marusina-sweets.onrender.com/categories/${id}`,
         //`http://127.0.0.1:8000/categories/${id}`,
         order
@@ -148,8 +171,9 @@ export const useOrders = create<State & Actions>((set)=> ({
   removeOrder: async (id: number) => {
     try {
       set({ isDownloaded: false, isError: false });
-      const responseDel = await axios.delete(
-        urlOnrenderOrders + id,
+      const responseDel = await api.delete(
+        //urlOnrenderOrders + id,
+        urlJWTOrders + id,
         //`https://marusina-sweets.onrender.com/categories/${id}`,
         //`http://127.0.0.1:8000/categories/${id}`,
       );
@@ -164,7 +188,7 @@ export const useOrders = create<State & Actions>((set)=> ({
       set({
         error: "Произошла непредвиденная ошибка",
         isDownloaded: true,
-        isError: true,
+        isError: false,
       });
     }
   },

@@ -9,7 +9,13 @@ const ErrorPage: React.FC = () => {
     <div className="error__page" >
       <h1 style={{ fontSize: '3rem', marginBottom: '1rem' }}>Упс...</h1>
       <p style={{ fontSize: '1.5rem' }}>
-        Что-то пошло не так... Пожалуйста, обновите страницу.
+        Страница не найдена
+      </p>
+      <p style={{ fontSize: '1.5rem' }}>
+        или
+      </p>
+      <p style={{ fontSize: '1.5rem' }}>
+        что-то пошло не так... Пожалуйста, обновите страницу.
       </p>
       <p style={{ fontSize: '1.5rem', marginBottom: '2rem' }}>
         Пожалуйста, обновите страницу

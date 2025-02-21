@@ -11,11 +11,19 @@ const Categories: FC = () => {
     }, [getCategories])
   
     return (
-        <div className="catgories">
-            {
-                categories.map((category, ind) => <Category {...category} key={category.id || ind}/>)
+        <>
+            { categories.length > 0
+                ?
+                <div className="catgories">
+                    {
+                        categories.map((category, ind) => <Category {...category} key={category.id || ind}/>)
+                    }
+                </div>
+                :
+                <h3>Нет пока ничего</h3>
             }
-        </div>
+        </>
+        
     );
 }
 

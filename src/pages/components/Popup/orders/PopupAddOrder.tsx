@@ -1,235 +1,298 @@
-import { FC, useState, useRef } from "react";
+import { FC, useState } from "react";
 import { useProducts } from "../../../../store/products";
-import { useCategories } from "../../../../store/categories";
 import { usePopup } from "../../../../store/popup";
+import { useOrders } from "../../../../store/orders";
+import { useClients } from "../../../../store/clients";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { IBaseOrder } from "../../../../models/IOrder";
+import InputMask from "react-input-mask";
+import * as yup from "yup";
+
+const schema = yup.object({
+/*     client_id: yup
+        .number()
+        .required("Выберите клиента")
+        .typeError("Выберите клиента")
+        .positive("Некорректный client_id"), */
+    client_phone: yup
+        .string()
+        .required("Укажите номер телефона")
+        .min(12, "Должно быть не менее 12 символов")
+        .max(16, "Должно быть не более 16 символов"),
+    client_name: yup
+        .string()
+        .required("Укажите номер телефона")
+        .min(3, "Должно быть не менее 3 символов")
+        .max(25, "Должно быть не более 25 символов"),
+    product_id: yup
+        .number()
+        .required("Выберите продукт")
+        .typeError("Выберите продукт")
+        .positive("Некорректный product_id"),
+    quantity: yup
+        .number()
+        .typeError("")
+        .min(1, "Количество должно быть больше нуля")
+        .default(1),
+    total_price: yup.number().typeError("").default(0),
+    total_weight: yup.number().typeError("").default(0),
+    is_active: yup.boolean().default(false),
+    adres: yup
+        .string()
+        .notRequired()
+        .max(100, "Должно быть не более 100 символов"),
+    comment: yup
+        .string()
+        .notRequired()
+        .max(100, "Должно быть не более 100 символов"),
+    date: yup
+        .string()
+        .required("Выберите дату")
+        .test("is-future-date", "Дата должна быть не раньше сегодня", (value) => {
+            if (!value) return false;
+            const selectedDate = new Date(value);
+            const today = new Date();
+            selectedDate.setHours(0, 0, 0, 0);
+            today.setHours(0, 0, 0, 0);
+            return selectedDate >= today;
+        }),
+}).required();
 
 const PopupAddOrder: FC = () => {
-    const { addProduct } = useProducts();
-
+    const { getProductById, products, product } = useProducts();
+    const { clients, addClient, updateClient } = useClients();
+    const { addOrder } = useOrders();
     const { isOpenHandler, addNamePopup } = usePopup();
-    const { categories } = useCategories();
-    const fileInputRef = useRef<HTMLInputElement>(null);
 
-    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-    const imgURLInput = document.querySelector('input[name="img_URL"]') as HTMLInputElement;
-    //const [error, setError] = useState<string | null>(null);
+    const { 
+        register,
+        handleSubmit, 
+        formState: { errors },
+        setValue
+    } = useForm<IBaseOrder>({
+        mode: "all",
+        resolver: yupResolver(schema),
+    });
 
-    //console.log(error)
-
-    const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        const formData = new FormData(event.currentTarget);
-    
-        const title = formData.get("title")?.toString() || "";
-        const description = formData.get("description")?.toString() || "";
-        const img_title = formData.get("img_title")?.toString() || "";
-    
-        const price_for_itm = parseFloat(formData.get("price_for_itm")?.toString() || "0");
-        const weight_for_itm = parseFloat(formData.get("weight_for_itm")?.toString() || "0");
-        const category_id = formData.get("category_id") ? Number(formData.get("category_id")) : null;
-        const is_active = formData.get("is_active") === "true";
-    
-        // Проверка формата чисел
-        if (isNaN(price_for_itm) || isNaN(weight_for_itm)) {
-            console.error("Цена или вес должны быть в формате 00.00");
-            return;
-        }
-    
-        //const URL = formData.get("img_URL")?.toString() || "";
-        //let img_URL: string | null;
-    
-/*         const file = formData.get("img_file") as File || "";
-
-        if (file?.size != 0) {
-            try {
-                const base64 = await fileToBase64(file);
-                img_URL = base64;
-            } catch (error) {
-                console.error("Ошибка чтения файла:", error);
-                return;
-            }
-        }; */
-
-        const img_URL: string | null = previewUrl;
-    
-        addProduct({
-            title,
-            description,
-            img_URL,
-            img_title,
-            price_for_itm,
-            weight_for_itm,
-            is_active,
-            category_id,
-        });
-
-/*         console.log({
-            title,
-            description,
-            img_URL,
-            img_title,
-            price_for_itm,
-            weight_for_itm,
-            is_active,
-            category_id,
-        }); */
-    
-        addNamePopup("", "");
-        isOpenHandler(false);
-        setPreviewUrl(null);
-        if (imgURLInput) imgURLInput.value = "";
-    };
-    
-    // Утилита для преобразования файла в base64
-/*     const fileToBase64 = (file: File): Promise<string> => {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = () => {
-                if (reader.result) {
-                    resolve(reader.result.toString());
-                } else {
-                    reject(new Error("Ошибка чтения файла"));
-                }
-            };
-            reader.onerror = (error) => reject(error);
-            reader.readAsDataURL(file);
-        });
-    }; */
-
-    const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setPreviewUrl(null);
-        const file = event.target.files?.[0];
-        if (file) {
-            //setPreviewUrl(null);
-            if (imgURLInput) imgURLInput.value = "";
-            const reader = new FileReader();
-            reader.onload = (e) => setPreviewUrl(e.target?.result as string);
-            reader.readAsDataURL(file);
-        } else {
-            setPreviewUrl(event.target.value);
-        }
-    };
-    
     const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (Number(event.target.value) < 0) {
             event.target.value = "0";
         }
     };
 
-    const [selectedCategory, setSelectedCategory] = useState<number | string>('');
+    const [selectedProduct, setSelectedProduct] = useState<number | string>('');
+    const [quantity, setQuantity] = useState<number | string>(1);
 
-    const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        setSelectedCategory(event.target.value);
-        console.log('Selected category ID:', event.target.value);
+    const handleChange = (event: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>) => {   
+        const { name, value } = event.target;
+        if (name === 'product_id') {
+            setSelectedProduct(value);
+            if (value) {
+                getProductById(Number(value));
+                const price = product?.price_for_itm || 0;
+                const weight = product?.weight_for_itm || 0;
+                const calculatedPrice = Number(quantity) * price;
+                const calculatedWeight = Number(quantity) * weight;
+                setValue("total_price", calculatedPrice);
+                setValue("total_weight", calculatedWeight);
+            }
+        } else if (name === 'quantity') {
+            setQuantity(Number(value));
+            if (selectedProduct) {
+                const price = product?.price_for_itm || 0;
+                const weight = product?.weight_for_itm || 0;
+                const calculatedPrice = Number(value) * price;
+                const calculatedWeight = Number(value) * weight;
+                setValue("total_price", calculatedPrice);
+                setValue("total_weight", calculatedWeight);
+            }
+        }
     };
 
-    const handleCancel = () => {
-        setPreviewUrl(null);
-        if (fileInputRef.current) fileInputRef.current.value = "";
-        if (imgURLInput) imgURLInput.value = "";
-    };
+    const onSubmit  = (data: IBaseOrder) => {
 
+        let phone = data.client_phone.replace(/\D/g, "");
+        phone = `+7${phone.slice(1)}`;
+
+        const client = clients.find(el => el.phone === phone);
+
+        if (client) {
+            updateClient({ ...client, name: data.client_name, phone })
+        } else {
+            addClient({ name: data.client_name, phone });
+        }
+
+        const updatedData: IBaseOrder = {
+            ...data,
+            client_phone: phone,
+            quantity: data.quantity ?? 1,
+            total_price: data.total_price ?? 0,
+            total_weight: data.total_weight ?? 0,
+        };
+
+        addOrder(updatedData);
+        addNamePopup("", "");
+        isOpenHandler(false);
+    };
 
     return (
-        <form className="form" onSubmit={onSubmit}>
-            <input
-                className="input"
-                name="title"
-                type="text"
-                placeholder="Название продукта"
-                required
-            />
-            <input
-                className="input"
-                name="description"
-                type="text"
-                placeholder="Описание"
-            />
+        <form className="form" onSubmit={handleSubmit(onSubmit)}>
+            <div style={{ position: 'relative', display: 'flex' }}>
+                <InputMask
+                    className="input"
+                    {...register('client_phone')}
+                    type="tel"
+                    mask="+7(999)999-99-99"
+                    placeholder="+7(XXX)XXX-XX-XX"
+                    required
+                    style={{ fontFamily: "monospace" }}
+                />
+                {errors.client_phone && <div className="errors">{errors.client_phone.message}</div>}
+            </div>
 
-            <input
-                className="input"
-                name="img_URL"
-                type="text"
-                onChange={handleFileSelect}
-                placeholder="URL-картинки"
-            />
-            <span style={{ margin: '-1.5rem' }}>или</span>
-            <label htmlFor="fileInput" className="input add-btn" style={{ cursor: 'pointer' }}>
-                Выберите файл
+            <div style={{ position: 'relative', display: 'flex' }}>
                 <input
                     className="input"
-                    name="img_file"
-                    type="file"
-                    id="fileInput"
-                    onChange={handleFileSelect}
-                    style={{ display: 'none' }}
+                    type="text"
+                    placeholder="Имя клиента"
+                    {...register('client_name')}
                 />
-            </label>
+                {errors.client_name && <div className="errors">{errors.client_name.message}</div>}
+            </div>
 
-            {previewUrl && (
-                <div style={{ marginTop: "10px", position: 'relative' }}>
-                    <img
-                        src={previewUrl}
-                        alt="Preview"
-                    />
-                    <button
-                        type="button"
-                        onClick={handleCancel}
-                        className="delete-button"
-                    >
-                        ✕
-                    </button>
-                </div>
-            )}
-
-            
-            <input
-                className="input"
-                name="img_title"
-                type="text"
-                placeholder="Описание картинки"
-            />
-            <input
-                className="input"
-                name="price_for_itm"
-                type="number"
-                placeholder="Цена продукта"
-                min={0}
-                onInput={handleInput}
-            />
-            <input
-                className="input"
-                name="weight_for_itm"
-                type="number"
-                placeholder="Вес продукта"
-                min={0}
-                onInput={handleInput}
-            />
-            <label className="input" style={{ cursor: "pointer", backgroundColor: "white", textAlign: "left" }}>
-                <input
-                    
-                    name="is_active"
-                    type="checkbox"
-                />
-                <span style={{ marginLeft: "10px" }}>В продажу</span>
-            </label>
-
-            <select
-                className="input"
-                name="category_id"
-                value={selectedCategory}
-                onChange={handleChange}
-            >
-                <option value=''>
-                    Категория
-                </option>
-                { categories.map((category) => (
-                    <option key={category.id} value={ category.id }>
-                        { category.title }
+{/*             <div style={{ position: 'relative' }}>
+                <select
+                    className="input"
+                    //name="client_id"
+                    {...register('client_id')}
+                    value={selectedClient}
+                    onChange={handleChange}
+                >
+                    <option value=''>
+                        Номер телефона клиента
                     </option>
-                ))}
-            </select>
+                    { clients.map((client) => (
+                        <option key={client.id} value={ client.id }>
+                            { client.phone }
+                        </option>
+                    ))}
+                </select>
+                {errors.client_id && <div className="errors">{errors.client_id.message}</div>}
+            </div> */}
 
+            <div style={{ position: 'relative' }}>
+                <select
+                    className="input"
+                    //name="product_id"
+                    {...register('product_id')}
+                    value={selectedProduct}
+                    onChange={handleChange}
+                >
+                    <option value=''>
+                        Название продукта
+                    </option>
+                    { products.map((product) => (
+                        <option key={product.id} value={ product.id }>
+                            { product.title }
+                        </option>
+                    ))}
+                </select>
+                {errors.product_id && <div className="errors">{errors.product_id.message}</div>}
+            </div>
+
+
+            <div style={{ position: 'relative' }}>
+                <input
+                    className="input"
+                    //name="quantity"
+                    {...register('quantity')}
+                    type="number"
+                    placeholder="Количество"
+                    min={1}
+                    value={product && selectedProduct ? quantity : ''}
+                    onChange={handleChange}
+                    onInput={handleInput}
+                />
+                {errors.quantity && <div className="errors">{errors.quantity.message}</div>}
+            </div>
+
+
+            <input
+                className="input"
+                //name="total_price"
+                {...register('total_price')}
+                type="number"
+                placeholder="Цена заказа"
+                value={product && selectedProduct ? Number(quantity) * Number(product?.price_for_itm) : ''}
+                onInput={handleInput}
+                disabled
+            />
+
+            <input
+                className="input"
+                //name="total_weight"
+                {...register('total_weight')}
+                type="number"
+                placeholder="Вес заказа"
+                value={product && selectedProduct ? Number(quantity) * Number(product?.weight_for_itm) : ''}
+                onInput={handleInput}
+                disabled
+            />
+
+
+            <div style={{ position: 'relative', display: 'flex' }}>
+                <textarea
+                    className="input"
+                    placeholder="Адрес доставки"
+                    {...register('adres')}
+                />
+                {errors.adres && <div className="errors">{errors.adres.message}</div>}
+            </div>
+
+            <div style={{ position: 'relative', display: 'flex' }}>
+                <textarea
+                    className="input"
+                    //name="comment"
+                    {...register('comment')}
+                    placeholder="Комментарии"
+                />
+                {errors.comment && <div className="errors">{errors.comment.message}</div>}
+            </div>
+
+            <div style={{ position: 'relative', display: 'none' }} >
+                <label 
+                    className="input" 
+                    style={{ 
+                        width: "100%",
+                        cursor: "pointer",
+                        backgroundColor: "white",
+                        textAlign: "left",
+                        display: "flex",
+                    }}
+                >
+                    <input
+                        //name="is_active"
+                        //className="input" 
+                        {...register('is_active')}
+                        defaultChecked={false}
+                        type="checkbox"
+                    />
+                    <span style={{ marginLeft: "10px" }}>Статус</span>
+                </label>
+            </div>
+
+            <div style={{ position: 'relative' }}>
+                <input
+                    className="input"
+                    //name="date"
+                    {...register('date')}
+                    type="date"
+                    placeholder="Дата доставки"
+                    defaultValue={new Date().toISOString().split("T")[0]}
+                />
+                {errors.date && <div className="errors">{errors.date.message}</div>}
+            </div>
 
 
             <button className="button" type="submit">

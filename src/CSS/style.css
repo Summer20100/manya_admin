@@ -10,11 +10,22 @@
 }
 
 .input {
+  width: 100%;
   padding: 10px;
   font-size: 16px;
   border: 1px solid #ccc;
   border-radius: 5px;
-  position: relative;
+  box-sizing: border-box;
+  padding-bottom: 1rem;
+}
+
+textarea.input {
+  width: 100%;
+  border-radius: 5px;
+}
+
+textarea::placeholder {
+  font: inherit;
 }
 
 .button {
@@ -43,7 +54,25 @@
   display: flex;
   place-items: center;
   min-width: 320px;
-  min-height: 100vh;
+  min-height: 95vh;
+}
+
+.errors {
+  color: red;
+  position: absolute;
+  font-size: 13px;
+  bottom: 0;
+  left: .5rem;
+}
+
+.number {
+  width: 1rem;
+  min-width: 1rem;
+  max-width: 5rem;
+}
+
+.actions {
+  width: 2rem;
 }
 
 /* Navigation */

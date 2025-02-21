@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { IBaseCategory, ICategory } from '../models/ICategory';
 import axios from "axios";
 import { URL } from '../http/url';
+import api from '../http/api';
 
 type State = {
   categories: ICategory[],
@@ -9,7 +10,7 @@ type State = {
   message: string,
   error: string
   isDownloaded: boolean,
-  isError: boolean
+  isError: boolean,
 }
 
 type Actions = {
@@ -21,16 +22,25 @@ type Actions = {
   removeCategory: (id: number) => Promise<void>;
 }
 
-const { urlOnrenderCategories, 
+const { 
+  //urlOnrenderCategories,
+  urlJWTCategories
   //urlLocalserverCategories 
 } = URL;
 
 const fetchCategories = async (set: (state: Partial<State>) => void) => {
   try {
-    const response = await axios.get(
-      urlOnrenderCategories
+/*     const response = await axios.get(
+      //urlOnrenderCategories
+      //"https://marusina-sweets.onrender.com/categories/"
+      `http://127.0.0.1:8000/categories/`
+    ); */
+
+    const response = await api.get(
+      //urlOnrenderCategories
       //"https://marusina-sweets.onrender.com/categories/"
       //`http://127.0.0.1:8000/categories/`
+      urlJWTCategories
     );
     if (response.status === 200) {
       set({ categories: response.data, isDownloaded: true, isError: false });
@@ -41,16 +51,17 @@ const fetchCategories = async (set: (state: Partial<State>) => void) => {
     if (axios.isAxiosError(error)) {
       console.error(error.response?.data);
       set({
-        error: error.response?.data || "An error occurred",
+        error: error.response?.data.detail || "Произошла непредвиденная ошибка",
         isDownloaded: true,
-        isError: true,
+        isError: false,
       });
     } else {
       console.error("Unexpected error:", error);
+      const errorMessage = error instanceof Error ? error.message : "An unexpected error occurred";
       set({
-        error: "An unexpected error occurred",
+        error: errorMessage,
         isDownloaded: true,
-        isError: true,
+        isError: false,
       });
     }
   }
@@ -72,8 +83,9 @@ export const useCategories = create<State & Actions>((set)=> ({
     getCategoryById: async (id: number) => {
       try {
         set({ isDownloaded: false, isError: false });
-        const response = await axios.get(
-          urlOnrenderCategories + id,
+        const response = await api.get(
+          //urlOnrenderCategories + id,
+          urlJWTCategories + id,
           //`https://marusina-sweets.onrender.com/categories/${id}`,
           //`http://127.0.0.1:8000/categories/${id}`,
         );
@@ -96,8 +108,9 @@ export const useCategories = create<State & Actions>((set)=> ({
     addCategory: async (category: IBaseCategory) => {
       try {
         set({ isDownloaded: false, isError: false });
-        const responseAdd = await axios.post(
-          urlOnrenderCategories,
+        const responseAdd = await api.post(
+          //urlOnrenderCategories,
+          urlJWTCategories,
           //"https://marusina-sweets.onrender.com/categories/",
           //"http://127.0.0.1:8000/categories/",
           category
@@ -138,8 +151,9 @@ export const useCategories = create<State & Actions>((set)=> ({
       try {
         set({ isDownloaded: false, isError: false });
         const { id } = category;
-        const responseUpdate = await axios.put(
-          urlOnrenderCategories + id,
+        const responseUpdate = await api.put(
+          //urlOnrenderCategories + id,
+          urlJWTCategories +id,
           //`https://marusina-sweets.onrender.com/categories/${id}`,
           //`http://127.0.0.1:8000/categories/${id}`,
           category
@@ -179,8 +193,9 @@ export const useCategories = create<State & Actions>((set)=> ({
     removeCategory: async (id: number) => {
       try {
         set({ isDownloaded: false, isError: false });
-        const responseDel = await axios.delete(
-          urlOnrenderCategories + id,
+        const responseDel = await api.delete(
+          //urlOnrenderCategories + id,
+          urlJWTCategories +id,
           //urlLocalserverCategories + id,
           //`https://marusina-sweets.onrender.com/categories/${id}`,
           //`http://127.0.0.1:8000/categories/${id}`,
@@ -198,7 +213,7 @@ export const useCategories = create<State & Actions>((set)=> ({
         set({
           error: "An unexpected error occurred",
           isDownloaded: true,
-          isError: true,
+          isError: false,
         });
       }
     },

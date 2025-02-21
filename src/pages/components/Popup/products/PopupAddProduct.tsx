@@ -12,9 +12,6 @@ const PopupAddProduct: FC = () => {
 
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const imgURLInput = document.querySelector('input[name="img_URL"]') as HTMLInputElement;
-    //const [error, setError] = useState<string | null>(null);
-
-    //console.log(error)
 
     const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -29,26 +26,10 @@ const PopupAddProduct: FC = () => {
         const category_id = formData.get("category_id") ? Number(formData.get("category_id")) : null;
         const is_active = formData.get("is_active") === "true";
     
-        // Проверка формата чисел
         if (isNaN(price_for_itm) || isNaN(weight_for_itm)) {
             console.error("Цена или вес должны быть в формате 00.00");
             return;
         }
-    
-        //const URL = formData.get("img_URL")?.toString() || "";
-        //let img_URL: string | null;
-    
-/*         const file = formData.get("img_file") as File || "";
-
-        if (file?.size != 0) {
-            try {
-                const base64 = await fileToBase64(file);
-                img_URL = base64;
-            } catch (error) {
-                console.error("Ошибка чтения файла:", error);
-                return;
-            }
-        }; */
 
         const img_URL: string | null = previewUrl;
     
@@ -62,45 +43,17 @@ const PopupAddProduct: FC = () => {
             is_active,
             category_id,
         });
-
-/*         console.log({
-            title,
-            description,
-            img_URL,
-            img_title,
-            price_for_itm,
-            weight_for_itm,
-            is_active,
-            category_id,
-        }); */
     
         addNamePopup("", "");
         isOpenHandler(false);
         setPreviewUrl(null);
         if (imgURLInput) imgURLInput.value = "";
     };
-    
-    // Утилита для преобразования файла в base64
-/*     const fileToBase64 = (file: File): Promise<string> => {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = () => {
-                if (reader.result) {
-                    resolve(reader.result.toString());
-                } else {
-                    reject(new Error("Ошибка чтения файла"));
-                }
-            };
-            reader.onerror = (error) => reject(error);
-            reader.readAsDataURL(file);
-        });
-    }; */
 
     const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
         setPreviewUrl(null);
         const file = event.target.files?.[0];
         if (file) {
-            //setPreviewUrl(null);
             if (imgURLInput) imgURLInput.value = "";
             const reader = new FileReader();
             reader.onload = (e) => setPreviewUrl(e.target?.result as string);

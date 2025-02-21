@@ -10,23 +10,31 @@ const Clients: FC = () => {
     }, [getClients]);
 
     return (
-        <div className="table">
-            <table className="table-products">
-                <thead>
-                    <tr>
-                        <th>№</th>
-                        <th>Имя</th>
-                        <th>Номер телефона</th>
-                        <th>Действия</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {clients.map((client, index) => (
-                        <Client {...client} key={client.id} index={index} />
-                    ))}
-                </tbody>
-            </table>
-        </div>
+        <>
+            { clients.length > 0
+                ?
+                <div className="table">
+                    <table className="table-products">
+                        <thead>
+                            <tr>
+                                <th className="number">№</th>
+                                <th style={{ minWidth: "12rem" }}>Имя</th>
+                                <th>Номер телефона</th>
+                                <th className="actions">Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {clients.map((client, index) => (
+                                <Client {...client} key={client.id} index={index} />
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+                :
+                <h3>Нет пока ничего</h3>
+            }
+        </>
+        
     );
 };
 

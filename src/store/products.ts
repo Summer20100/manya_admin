@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { IBaseProduct, IProduct } from '../models/IProduct';
 import axios from "axios";
 import { URL } from '../http/url';
+import api from '../http/api';
 
 type State = {
   products: IProduct[],
@@ -21,14 +22,18 @@ type Actions = {
   removeProduct: (id: number) => Promise<void>;
 }
 
-const { urlOnrenderProducts } = URL;
+const { 
+  //urlOnrenderProducts,
+  urlJWTProducts
+ } = URL;
 
 const fetchProducts = async (set: (state: Partial<State>) => void) => {
   try {
-    const response = await axios.get(
-      urlOnrenderProducts
-      //"https://marusina-sweets.onrender.com/categories/"
-      //`http://127.0.0.1:8000/categories/`
+    const response = await api.get(
+      //urlOnrenderProducts
+      urlJWTProducts
+      //"https://marusina-sweets.onrender.com/products/"
+      //`http://127.0.0.1:8000/products/`
     );
     if (response.status === 200) {
       set({ products: response.data, isDownloaded: true, isError: false });
@@ -38,9 +43,9 @@ const fetchProducts = async (set: (state: Partial<State>) => void) => {
   } catch (error) {
     if (axios.isAxiosError(error)) {
       set({
-        error: error.response?.data || "Произошла непредвиденная ошибка",
+        error: error.response?.data.detail || "Произошла непредвиденная ошибка",
         isDownloaded: true,
-        isError: true,
+        isError: false,
       });
     } else {
       set({
@@ -68,10 +73,11 @@ export const useProducts = create<State & Actions>((set)=> ({
     getProductById: async (id: number) => {
       try {
         set({ isDownloaded: false, isError: false });
-        const response = await axios.get(
-          urlOnrenderProducts + id,
-          //`https://marusina-sweets.onrender.com/categories/${id}`,
-          //`http://127.0.0.1:8000/categories/${id}`,
+        const response = await api.get(
+          //urlOnrenderProducts + id,
+          urlJWTProducts + id,
+          //`https://marusina-sweets.onrender.com/products/${id}`,
+          //`http://127.0.0.1:8000/products/${id}`,
         );
         if (response.status === 200) {
           set({ product: response.data, isDownloaded: true });
@@ -92,10 +98,11 @@ export const useProducts = create<State & Actions>((set)=> ({
     addProduct: async (product: IBaseProduct) => {
       try {
         set({ isDownloaded: false, isError: false });
-        const responseAdd = await axios.post(
-          urlOnrenderProducts,
-          //"https://marusina-sweets.onrender.com/categories/",
-          //"http://127.0.0.1:8000/categories/",
+        const responseAdd = await api.post(
+          //urlOnrenderProducts,
+          urlJWTProducts,
+          //"https://marusina-sweets.onrender.com/products/",
+          //"http://127.0.0.1:8000/products/",
           product
         );
         if (responseAdd.status === 201) {
@@ -134,10 +141,11 @@ export const useProducts = create<State & Actions>((set)=> ({
       try {
         set({ isDownloaded: false, isError: false });
         const { id } = product;
-        const responseUpdate = await axios.put(
-          urlOnrenderProducts + id,
-          //`https://marusina-sweets.onrender.com/categories/${id}`,
-          //`http://127.0.0.1:8000/categories/${id}`,
+        const responseUpdate = await api.put(
+          //urlOnrenderProducts + id,
+          urlJWTProducts + id,
+          //`https://marusina-sweets.onrender.com/products/${id}`,
+          //`http://127.0.0.1:8000/products/${id}`,
           product
         );
         if (responseUpdate.status === 200) {
@@ -162,10 +170,11 @@ export const useProducts = create<State & Actions>((set)=> ({
     removeProduct: async (id: number) => {
       try {
         set({ isDownloaded: false, isError: false });
-        const responseDel = await axios.delete(
-          urlOnrenderProducts + id,
-          //`https://marusina-sweets.onrender.com/categories/${id}`,
-          //`http://127.0.0.1:8000/categories/${id}`,
+        const responseDel = await api.delete(
+          //urlOnrenderProducts + id,
+          urlJWTProducts + id,
+          //`https://marusina-sweets.onrender.com/products/${id}`,
+          //`http://127.0.0.1:8000/products/${id}`,
         );
         if (responseDel.status === 200) {
           set({ message: responseDel.data.message })

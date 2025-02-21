@@ -1,20 +1,20 @@
 import { FC } from "react";
-import { useProducts } from "../../../../store/products";
 import { usePopup } from "../../../../store/popup";
+import { useOrders } from "../../../../store/orders";
 
-const PopupDeleteProduct: FC = () => {
-    const { removeProduct, product } = useProducts();
+const PopupDeleteOrder: FC = () => {
+    const { removeOrder, order } = useOrders();
     const { isOpenHandler } = usePopup();
     const handleDelete = () => {
-        if (product) {
-            removeProduct(product.id);
+        if (order) {
+            removeOrder(order.id);
             isOpenHandler(false);
         }
     };
 
     return (
         <>
-            <div>Хотите удалить продукт?</div>
+            <div>Хотите удалить заказ?</div>
             <button 
                 className="delete-button" 
                 onClick={() => handleDelete()} 
@@ -26,4 +26,4 @@ const PopupDeleteProduct: FC = () => {
     );
 };
 
-export default PopupDeleteProduct;
+export default PopupDeleteOrder;
