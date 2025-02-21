@@ -22,6 +22,8 @@ export class URL {
     static readonly urlLocalserverValidate: string = import.meta.env.VITE_ENV_URL_LOCALSERVER_VALIDATE || '';
   
     /* With JWT */
+    static readonly urlJWTbaseURL: string = import.meta.env.VITE_ENV_URL_JWT_BASEURL || '';
+
     static readonly urlJWTCategories: string = import.meta.env.VITE_ENV_URL_JWT_CATEGORIES || '';
     static readonly urlJWTProducts: string = import.meta.env.VITE_ENV_URL_JWT_PRODUCTS || '';
     static readonly urlJWTOrders: string = import.meta.env.VITE_ENV_URL_JWT_ORDERS || '';
