@@ -72,7 +72,7 @@ textarea::placeholder {
 }
 
 .actions {
-  width: 2rem;
+  width: 5rem;
 }
 
 /* Navigation */
@@ -360,7 +360,6 @@ button:focus-visible {
 
 .edit-button,
 .delete-button {
-  padding: 5px 10px;
   font-size: 14px;
   border: none;
   border-radius: 5px;
@@ -372,6 +371,7 @@ button:focus-visible {
 .edit-button {
   background-color: #4caf50;
   color: white;
+  padding: 8px;
 }
 
 .edit-button:hover {
@@ -381,6 +381,7 @@ button:focus-visible {
 .delete-button {
   background-color: #f44336;
   color: white;
+  padding: 8px 11px;
 }
 
 .delete-button:hover {
@@ -610,3 +611,11 @@ button:focus-visible {
     max-width: 100%;
   }
 }
+
+
+.table-products td {
+  word-wrap: break-word;
+  white-space: normal;
+  overflow-wrap: break-word;
+}
+
