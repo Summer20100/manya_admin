@@ -91,8 +91,11 @@ const PopupUpdateOrder: FC = () => {
                 comment: order.comment || "",
                 date: order.date
             });
-        }
-    }, [reset, order]);
+        };
+        getProductById(Number(order?.product_id));
+    }, [reset, order, getProductById]);
+
+    
 
     const onSubmit = (data: IOrderUpdate) => {
 
@@ -115,10 +118,15 @@ const PopupUpdateOrder: FC = () => {
         addNamePopup("", "");
         isOpenHandler(false);
     };
-
    
     const [selectedProduct, setSelectedProduct] = useState<number | string>('');
     const [quantity, setQuantity] = useState<number | string>(1);
+
+/*     useEffect(() => {
+        if (order) setSelectedProduct(order?.product_id);
+    }, [order]); */
+
+    console.log(product)
 
     const handleChange = (event: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>) => {   
         const { name, value } = event.target;
@@ -136,8 +144,10 @@ const PopupUpdateOrder: FC = () => {
             }
         } else if (name === 'quantity') {
             setQuantity(Number(value));
+            console.log(product)
             if (selectedProduct) {
                 const price = product?.price_for_itm || 0;
+                console.log(value)
                 const weight = product?.weight_for_itm || 0;
                 const calculatedPrice = Number(value) * price;
                 const calculatedWeight = Number(value) * weight;
@@ -146,6 +156,7 @@ const PopupUpdateOrder: FC = () => {
             }
         }
     };
+    
 
     return (
         <form className="form" onSubmit={handleSubmit(onSubmit)}>
