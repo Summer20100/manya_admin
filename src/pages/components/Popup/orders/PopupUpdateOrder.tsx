@@ -77,23 +77,32 @@ const PopupUpdateOrder: FC = () => {
     const totalWeight = watch("total_weight");
     
     useEffect(() => {
-        if (order) {
-            reset({
-                id: order.id,
-                client_phone: order.client_phone,
-                client_name: order.client_name,
-                product_id: order.product_id,
-                quantity: order.quantity,
-                total_price: order.total_price,
-                total_weight: order.total_weight,
-                is_active: order.is_active,
-                adres: order.adres,
-                comment: order.comment || "",
-                date: order.date
-            });
+        const fetchData = async () => {
+            try {
+                if (order) {
+                    reset({
+                        id: order.id,
+                        client_phone: order.client_phone,
+                        client_name: order.client_name,
+                        product_id: order.product_id,
+                        quantity: order.quantity,
+                        total_price: order.total_price,
+                        total_weight: order.total_weight,
+                        is_active: order.is_active,
+                        adres: order.adres,
+                        comment: order.comment || "",
+                        date: order.date
+                    });
+                }
+                if (order?.product_id) {
+                    await getProductById(Number(order.product_id));
+                }
+            } catch (err) {
+                console.error(err);
+            }
         };
-        getProductById(Number(order?.product_id));
-    }, [reset, order, getProductById]);
+        fetchData();
+    }, [reset, order, getProductById]); 
 
     
 
@@ -126,7 +135,7 @@ const PopupUpdateOrder: FC = () => {
         if (order) setSelectedProduct(order?.product_id);
     }, [order]); */
 
-    console.log(product)
+    //console.log(product)
 
     const handleChange = (event: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>) => {   
         const { name, value } = event.target;
@@ -142,18 +151,18 @@ const PopupUpdateOrder: FC = () => {
                 setValue("total_price", calculatedPrice);
                 setValue("total_weight", calculatedWeight);
             }
-        } else if (name === 'quantity') {
+        } else if (name === 'quantity' || selectedProduct) {
             setQuantity(Number(value));
-            console.log(product)
-            if (selectedProduct) {
+            //console.log(product)
+/*             if (selectedProduct) { */
                 const price = product?.price_for_itm || 0;
-                console.log(value)
+                //console.log(value)
                 const weight = product?.weight_for_itm || 0;
                 const calculatedPrice = Number(value) * price;
                 const calculatedWeight = Number(value) * weight;
                 setValue("total_price", calculatedPrice);
                 setValue("total_weight", calculatedWeight);
-            }
+/*             } */
         }
     };
     

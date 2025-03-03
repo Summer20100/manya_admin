@@ -111,11 +111,30 @@ function App() {
   if (isLoginError) return <ErrorPage />;
 
 
+  const allErrors = [errorCategories, errorProducts, errorClients, errorOrders, errorLogin]
+  .filter(Boolean)
+  .map(error => (typeof error === 'string' ? { msg: error } : error));
+
+  const allMessages = [messageCategories, messageProducts, messageClients, messageOrders, messageLogin]
+    .filter(Boolean)
+    .map(message => (typeof message === 'string' ? { msg: message } : message));
+
+  console.log(allErrors);
+  console.log(allMessages);
+
+
+
   return (
     <>
       { isDataLoading && token && <Loader /> }
 
-      {errorCategories && <ErrorNotification message={errorCategories} onClose={closeNotification} />}
+      { allErrors.length > 0 && <ErrorNotification message={allErrors} onClose={closeNotification} /> }
+      { allMessages.length > 0 && <MessageNotification message={allMessages} onClose={closeNotification} /> }
+
+
+
+
+{/*       {errorCategories && <ErrorNotification message={errorCategories} onClose={closeNotification} />}
       {errorProducts && <ErrorNotification message={errorProducts} onClose={closeNotification} />}
       {errorClients && <ErrorNotification message={errorClients} onClose={closeNotification} />}
       {errorOrders && <ErrorNotification message={errorOrders} onClose={closeNotification} />}
@@ -125,7 +144,7 @@ function App() {
       {messageProducts && <MessageNotification message={messageProducts}  onClose={closeNotification}/>}
       {messageClients && <MessageNotification message={messageClients}  onClose={closeNotification}/>}
       {messageOrders && <MessageNotification message={messageOrders}  onClose={closeNotification}/>}
-      {messageLogin && <MessageNotification message={messageLogin}  onClose={closeNotification}/>}
+      {messageLogin && <MessageNotification message={messageLogin}  onClose={closeNotification}/>} */}
 
 
       <Routes>

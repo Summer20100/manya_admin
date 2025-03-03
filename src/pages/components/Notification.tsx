@@ -52,7 +52,7 @@ const Notification: React.FC<NotificationProps> = ({ message, onClose, type }) =
   };
 
   const messageTextStyle: React.CSSProperties = {
-    flexGrow: 1,
+    //flexGrow: 1,
     marginBottom: '0',
     wordWrap: 'break-word',
   };
