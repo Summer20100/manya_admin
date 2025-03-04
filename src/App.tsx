@@ -119,11 +119,6 @@ function App() {
     .filter(Boolean)
     .map(message => (typeof message === 'string' ? { msg: message } : message));
 
-  console.log(allErrors);
-  console.log(allMessages);
-
-
-
   return (
     <>
       { isDataLoading && token && <Loader /> }
